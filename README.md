@@ -2,7 +2,7 @@
 
 This repository collects simulation inputs, analysis scripts, and figure data from two molecular-dynamics studies of vibration-induced ice nucleation.
 
-![Nanoscale study thumbnail](docs/assets/nanoscale-thumbnail.jpg)
+![Nanoscale study thumbnail](docs/assets/iceborn.png)
 
 ## Studies
 
