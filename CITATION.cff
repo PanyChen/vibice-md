@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: >-
+  Please cite the paper associated with the study whose data or software you use.
+title: Vibration-Induced Ice Nucleation Molecular-Dynamics Datasets
+type: dataset
+authors:
+  - family-names: Chen
+    given-names: Pengxu
+  - family-names: Sullivan
+    given-names: Patrick
+  - family-names: Pillai
+    given-names: Rohit
+  - family-names: Datta
+    given-names: Saikat
+abstract: >-
+  Simulation inputs, analysis scripts, trajectories, and figure data from two
+  molecular-dynamics studies of vibration-induced ice nucleation.
+keywords:
+  - ice nucleation
+  - molecular dynamics
+  - LAMMPS
+  - MATLAB
+  - surface vibration

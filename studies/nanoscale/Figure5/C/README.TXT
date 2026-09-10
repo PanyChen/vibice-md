@@ -1,0 +1,2 @@
+The data in text files *.txt show the maximum ice-phase water molecules with frequency at different vibrational amplitudes.
+In each file, the first column is the frequency and the second column the corresponding maximum ice-phase water molecules $N_{max}$

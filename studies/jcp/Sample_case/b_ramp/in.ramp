@@ -1,0 +1,81 @@
+#########################################################################################
+log        		log.ramp
+#########################################################################################
+# nanofilm equil simulation, LAMMPS
+
+units 			real					
+dimension		3
+boundary		p p p					
+atom_style		full
+
+processors      1 * *
+
+
+#------------------- Parameters -------------------#
+
+variable        initT equal 290.0   
+variable        targetTemp equal 237.0  
+
+#--------------------------------------------------#
+
+############################################################ READ FILE
+
+read_data      data.nanofilm
+
+############################################################ INTERACTION
+
+pair_style		hybrid lj/cut 13.0 sw	
+
+pair_coeff		* * sw mW.sw mW NULL
+pair_coeff   	1 2 lj/cut 1.37 2.34    ###  adhesion work: 6.44 kcal/mole
+pair_coeff   	2 2 lj/cut 15.9751 2.4710
+
+pair_modify	    shift yes mix arithmetic
+
+group			water type 1
+group			wall type 2
+region          freezeAtom block -6.76 -2.25 INF INF INF INF units box
+group           freezeWall region freezeAtom
+group           mobWall subtract wall freezeWall
+
+minimize        1.0e-4 1.0e-6 100 1000
+neighbor		2.0 bin
+neigh_modify    delay 1 check yes
+
+############################################################ RUN PARAMETERS
+
+compute			Tw water temp/com
+compute			Pliquid water pe/atom
+compute			Pw water reduce sum c_Pliquid
+compute 		Kliquid water ke/atom
+compute			Kw water reduce sum c_Kliquid
+compute         waterwall water group/group wall
+variable	    locF equal c_waterwall[1]               ## local force on the surface 
+
+compute		    wallTemp mobWall temp/com
+compute         wallAtomPE mobWall pe/atom
+compute         wallPE mobWall reduce sum c_wallAtomPE
+
+thermo_style	custom step c_Tw temp c_Pw c_Kw pe etotal vol press lx ly lz   
+thermo			1000	
+thermo_modify	flush yes
+
+timestep		1.0
+
+fix			    fixwall wall setforce 0.0 0.0 0.0
+velocity		water create ${initT} 82184 mom yes dist gaussian
+fix			    1 water nvt temp ${initT} ${initT} 500.0
+run             1000
+unfix           1
+reset_timestep  0
+
+fix			    2 water nvt temp ${initT} ${targetTemp} 500.0
+fix             writeFile all ave/time 1 1 1000 c_Tw c_Pw c_Kw v_locF c_wallTemp c_wallPE file ramp.txt
+dump            trj all custom 1000000 mwIce.lammpstrj id type mol q x y z vx vy vz
+
+restart 		53000000 restart.*.ramp
+run				53000000
+
+unfix			2
+unfix           fixwall
+

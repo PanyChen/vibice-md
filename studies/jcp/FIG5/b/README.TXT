@@ -1,0 +1,1 @@
+MB.m processes the equilibrium trajectory files for each simulation case. It calculates the molecular velocity magnitude distribution, plots the averaged velocity probability density, and fits the result using the Maxwell-Boltzmann distribution.

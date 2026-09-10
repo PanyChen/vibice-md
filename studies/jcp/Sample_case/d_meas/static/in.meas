@@ -1,0 +1,66 @@
+#########################################################################################
+log        		log.meas
+#########################################################################################
+# nanofilm meas simulation, LAMMPS
+
+units 			real					
+dimension		3
+boundary		p p p					
+atom_style		full
+
+processors      1 * *
+
+#------------------- Parameters -------------------#
+
+variable        targetTemp equal 237
+
+#--------------------------------------------------#
+
+############################################################ READ FILE
+
+read_restart    restart.*.equil
+
+############################################################ INTERACTION
+
+pair_style		hybrid lj/cut 13.0 sw	
+
+pair_coeff		* * sw mW.sw mW NULL
+pair_coeff   	1 2 lj/cut 1.37 2.34    ###  adhesion work: 6.44 kcal/mole
+pair_coeff   	2 2 lj/cut 15.9751 2.4710
+
+pair_modify	    shift yes mix arithmetic
+
+neighbor		2.0 bin
+neigh_modify    delay 1 check yes
+
+############################################################ RUN PARAMETERS
+
+compute			Tw water temp/com
+compute			Pliquid water pe/atom
+compute			Pw water reduce sum c_Pliquid
+compute 		Kliquid water ke/atom
+compute			Kw water reduce sum c_Kliquid
+
+compute		    wallTemp mobWall temp/com
+compute         wallAtomPE mobWall pe/atom
+compute         wallPE mobWall reduce sum c_wallAtomPE
+
+thermo_style	custom step c_Tw temp c_Pw c_Kw pe etotal vol press lx ly lz   
+thermo			1000	
+thermo_modify	flush yes
+
+timestep		1.0
+
+fix             waterNVE water nve
+fix 	    	movNveWallMeas mobWall nve
+fix             walltermo mobWall temp/berendsen ${targetTemp} ${targetTemp} 500.0
+fix_modify      walltermo temp wallTemp
+
+fix             writeFile all ave/time 1 1 100 c_Tw c_Pw c_Kw c_wallTemp c_wallPE file meas.txt
+dump            100 all custom 25000 meas.lammpstrj id type mol q x y z vx vy vz
+
+run             10000000
+
+unfix           waterNVE
+
+

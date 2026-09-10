@@ -1,0 +1,17 @@
+# Operating-system metadata
+.DS_Store
+._*
+__MACOSX/
+
+# MATLAB temporary files
+*.asv
+
+# Compiled local binaries and objects
+*.o
+*.so
+numChk
+
+# Common LAMMPS and Slurm runtime outputs
+log.lammps
+restart.*
+slurm-*.out

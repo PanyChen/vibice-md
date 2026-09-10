@@ -1,0 +1,2 @@
+The data in text files *.txt with numbers show the maximum negative pressure with vibration amplitude at different water thickness.
+In each of these files, the first column is the vibration amplitude and the second column the corresponding maximum negative pressure.

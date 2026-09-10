@@ -1,0 +1,1 @@
+The data in text files *.txt contain the probability distribution of the residence time for each case. "residenceDistribution.m" plot all cases in one graph.
